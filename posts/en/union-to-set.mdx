@@ -1,0 +1,196 @@
+---
+title: "A utility type for converting union to set in TypeScript"
+excerpt: "In this article, we created a type tool to convert Union to Set from a real-world standpoint."
+date: "2023-02-04"
+locale: "en"
+tags: [TypeScript]
+coverImage: https://rorsch-1256426089.file.myqcloud.com/public/202301310013066.png
+---
+
+## Motivation
+
+Assume you are working on a Todo app.
+![homer's Todo List](https://rorsch-1256426089.file.myqcloud.com/public/202301302120989.webp)
+This app uses an HTTP API to retrieve all of the to-do items. You and your back-end colleagues agree on a data type for to-do：
+
+```typescript
+type Todo = {
+  id: number;
+  title: string;
+  description: string;
+  /**
+   * 0 means active, 1 means completed
+   */
+  status: 0 | 1;
+};
+```
+
+Also, this app contain a select component for filtering out active/completed items, and you could build the following data structure to represent all of the possible options:
+
+```typescript
+const statusFilterOptions = [
+  {
+    value: 0,
+    label: "active",
+  },
+  {
+    value: 1,
+    label: "completed",
+  },
+];
+```
+
+You may define a type for this data structure to avoid a coworker or yourself from accidentally outputting a bug while refactoring this code later：
+
+```typescript
+type Option = {
+  value: Todo["status"];
+  label: string;
+};
+
+const statusFilterOptions: Option[] = [
+  {
+    value: 0,
+    label: "active",
+  },
+  {
+    value: 1,
+    label: "completed",
+  },
+];
+```
+
+In general, if your team is simply using Typescript, this is sufficient. However, if we want to be more specific about the type of `statusFilterOptions`, we may go much farther here. The following examples of `statusFilterOptions`, while satisfying the `Option` type, will cause bugs in the select component used to **filter out incomplete/completed items** in a production environment:
+
+```typescript
+// some value in options
+const statusFilterOptions: Option[] = [
+  {
+    value: 1,
+    label: "active",
+  },
+  {
+    value: 1,
+    label: "completed",
+  },
+];
+
+// missing one option
+const statusFilterOptions: Option[] = [
+  {
+    value: 1,
+    label: "active",
+  },
+];
+
+// option is overwritten by one
+const statusFilterOptions: Option[] = [
+  {
+    value: 0,
+    label: "active",
+  },
+  {
+    value: 1,
+    label: "completed",
+  },
+  {
+    value: 2,
+    label: "completed",
+  },
+];
+```
+
+Not only to eliminate the above bug cases, but consider a real-world business scenario in which the product may change frequently, and the status of todo may become 0, 1 and 2 later on. To prevent the situation where only the `Todo` type is modified and the filter options are not modified at the same time, we can write a type that can be widely used in such scenarios.
+
+## Coding
+
+Consider our type's input and output first. We expect the input type to be a set like `0 | 1` or `male | female`, and the expected output type should be an array containing all the elements of the set precisely, one cannot be more, one cannot be less 🙅♀️, and the order of the array elements is adjustable. It is easy to conclude that what we need is a type that converts `union` to `set`. The following is the `UnionToSet` code.
+
+```typescript
+type UnionToSet<
+  U extends string | number | symbol,
+  R extends (string | number | symbol)[] = []
+> = {
+  [S in U]: Exclude<U, S> extends never
+    ? [...R, S]
+    : UnionToSet<Exclude<U, S>, [...R, S]>;
+}[U];
+```
+
+The above code implements the conversion by recursively traversing U. The three following points should be noticed at ⚠️：
+
+- **Uses the heavyweight features provided by TypeScript version 4.0: [Variadic Tuple Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html#variadic-tuple-types)**。Therefore, it can only be used in TypeScript 4.0 and above.
+- **Based on recursion**. Although [ TypeScript 4.5 is optimized for tail recursion](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html#tail-recursion-elimination-on-conditional-types)，Although [TypeScript 4.5](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html#tail-recursion-elimination-on-conditional-types) is optimized for tail recursion, the `UnionToSet` cannot be converted to tail recursion mode, so please do not use it when the collection is too large.
+- **JavaScript Object key type limitation**. Because of the JavaScript object key limitation, TypeScript is limited to the type of U in '[S in U]' must inherit from'string | numebr | symbol', therefore a union such as 'true | false' cannot utilize this type. Of course, because the Boolean type has only two values, Even if you make a typo on True or False, your IDE will tell you, so it is not essential to restrict the type precisely.
+
+Here we can do a small optimization, in the above code, U inherits from `string | number`, R inherits from `string | number`, so we can abstract this type and mask U and R to the user：
+
+```typescript
+type UnionToSetHelper<
+  T extends keyof any,
+  U extends T = T,
+  R extends T[] = []
+> = {
+  [S in U]: Exclude<U, S> extends never
+    ? [...R, S]
+    : UnionToSetHelper<T, Exclude<U, S>, [...R, S]>;
+}[U];
+
+export type UnionToSet<T extends keyof any> = UnionToSetHelper<T>;
+```
+
+The following are examples of 'UnionToSet' test cases:
+
+```typescript
+const a: UnionToSet<0 | 1> = [0, 1]; // ✅
+const a: UnionToSet<0 | 1> = [1, 0]; // ✅
+const b: UnionToSet<0 | 1> = [0, 1, 2]; // ❎
+const c: UnionToSet<0 | 1> = [0]; // ❎
+const d: UnionToSet<0 | 1> = [1, 1]; // ❎
+```
+
+Based on the `UnionToSet` type we built, we can simply code a `Options` type that is strongly associated with real-world business:：
+
+```typescript
+type Option<T extends keyof any> = {
+  value: T;
+  label: string;
+};
+
+type OptionsHelper<
+  T extends keyof any,
+  U extends T = T,
+  R extends Option<T>[] = []
+> = {
+  [S in U]: Exclude<U, S> extends never
+    ? [...R, Option<S>]
+    : OptionsHelper<T, Exclude<U, S>, [...R, Option<S>]>;
+}[U];
+
+type Options<T extends keyof any> = OptionsHelper<T>;
+```
+
+The following is the Todo demo in this article; you may attempt to edit the 'Todo' type in'src/App.tsx' after forking.
+
+<iframe
+  src="https://codesandbox.io/embed/demo-of-suikos-blog-union-to-set-d2c3xi?fontsize=14&hidenavigation=1"
+  style={{
+    width: "100%",
+    height: "500px",
+    border: 0,
+    borderRadius: 4,
+    overflow: "hidden",
+  }}
+  title="demo of suiko&#039;s blog union-to-set"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
+## Bonus
+
+This article concentrates on the situation of 'union to set', and it's logical to question if 'union' can be converted to 'tuple'(sorted set).
+You can jump to this [issue](https://github.com/microsoft/TypeScript/issues/13298) to see what people are talking about. [This question](https://github.com/type-challenges/type-challenges/blob/main/questions/00730-hard-union-to-tuple/README.md) is also available in [type-challenge](https://github.com/type-challenges/type-challenges).
+
+## In the end
+
+I'd love to hear your feedback and suggestions❤️.

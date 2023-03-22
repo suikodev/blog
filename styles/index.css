@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.tk-icon,
+.tk-action-icon {
+  @apply text-primary !important;
+}
+
+.el-input__inner:focus {
+  @apply border-primary !important;
+}
+
+.el-textarea__inner:focus {
+  @apply border-primary !important;
+}
+
+.el-loading-spinner {
+  @apply flex justify-center !important;
+}
+
+.tk-preview,
+.tk-cancel {
+  @apply btn btn-outline btn-secondary btn-sm !important;
+}
+
+.tk-send {
+  @apply btn btn-primary btn-sm !important;
+}
+
+@layer utilities {
+  .text-shadow-primary {
+    text-shadow: 2px 2px theme("colors.primary");
+  }
+  .text-shadow-primary-sm {
+    text-shadow: 4px 4px theme("colors.primary");
+  }
+
+  .text-shadow-secondary {
+    text-shadow: 2px 2px theme("colors.secondary");
+  }
+  .text-shadow-secondary-sm {
+    text-shadow: 4px 4px theme("colors.secondary");
+  }
+
+  .text-gradient-to-r {
+    @apply text-transparent bg-clip-text bg-gradient-to-r;
+  }
+  .text-gradient-to-b {
+    @apply text-transparent bg-clip-text bg-gradient-to-b;
+  }
+  .text-gradient-to-t {
+    @apply text-transparent bg-clip-text bg-gradient-to-t;
+  }
+  .text-gradient-to-l {
+    @apply text-transparent bg-clip-text bg-gradient-to-l;
+  }
+}

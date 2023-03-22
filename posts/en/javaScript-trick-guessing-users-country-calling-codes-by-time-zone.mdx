@@ -1,0 +1,98 @@
+---
+title: "JavaScript Trick: Guessing Users' Country Calling Codes by Time Zone"
+excerpt: "Learn how to use JavaScript to retrieve a user's country calling code based on their location, improving the quality of your website or application services"
+date: "2023-03-20"
+locale: "en"
+tags: [JavaScript, Country Calling Code, User Location]
+coverImage: https://rorsch-1256426089.file.myqcloud.com/public/202303220312340.png
+---
+
+As developers, we often need to determine a user's location to provide better services. One key piece of information that can be useful is the user's country calling code - the prefix used when dialing international phone numbers. One efficient and reliable way to guess users' country calling codes in JavaScript is based on their time zone. You can explore the demo on [this website](https://guess-calling-code.anarch.studio/).
+
+## Why Guessing Users' Country Calling Codes Matters
+
+Guessing users' country calling codes can be helpful for several reasons:
+
+- **Formatting Phone Numbers**: Automatically formatting phone numbers based on the user's location can enhance user experience by adding the appropriate country calling code and formatting the number itself according to local conventions.
+- **Selecting Dialing Prefixes**: Using the correct dialing prefix when making international calls can be crucial. By guessing the user's country calling code, you can select the appropriate prefix automatically and make the call process smoother for the user.
+- **Geo-Targeting**: You may want to show specific content or features based on the user's location. Guessing their country calling code can help make more accurate geo-targeting decisions.
+
+## Introducing a New Solution: Guessing Based on Time Zone
+
+I've just released a library on NPM called [guess-calling-code](https://www.npmjs.com/package/guess-calling-code), offering a streamlined method for guessing users' country calling codes in JavaScript based on their time zone. This library leverages the `Intl.DateTimeFormat` API to obtain the user's time zone, which it then cross-references with a list of time zone-to-country phone code mappings.
+
+### Usage
+
+Here's an example usage of `guess-calling-code`:
+
+```javascript
+import guessCallingCode from "guess-calling-code";
+
+const callingCode = guessCallingCode();
+
+if (callingCode) {
+  console.log(`User's country calling code is ${callingCode}`);
+} else {
+  console.log("Unable to determine user's country calling code");
+}
+```
+
+You see, it's easy to use.
+
+### How it works
+
+First, here's a function to retrieve the user's time zone city using the `Intl.DateTimeFormat` API:
+
+```typescript
+function getUserTimeZoneCity(): string | undefined {
+  try {
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (!userTimezone) return;
+    const timezoneArr = userTimezone.split("/");
+    const result = timezoneArr[timezoneArr.length - 1];
+    return result;
+  } catch (error) {
+    return;
+  }
+}
+```
+
+This function returns the user's time zone city string like `"Montreal"` or `undefined` if the runtime doesn't support the `Intl` namespace.
+
+Next, we define our main function, `guessCallingCode`, which calls `getUserTimeZoneCity` and cross-references the resulting city name with our [pre-populated JSON object](https://github.com/AnarchStudio/guess-calling-code/blob/main/lib/metadata/timezoneCityToCallingCodeObject.json) of known city-to-calling-code mappings:
+
+```typescript
+function guessCallingCode(): string | undefined {
+  const timezoneCity = getUserTimeZoneCity();
+  if (!timezoneCity) return;
+  const callingCode = timezoneCityToCallingCodeObj[timezoneCity];
+  return callingCode;
+}
+```
+
+With just these two functions, you can easily and accurately estimate a user's country calling code.
+
+If you're interested in how the time zone city to calling code JSON is generated, check out this [post](https://www.techighness.com/post/get-user-country-and-region-on-browser-with-javascript-only/) which introduces a way to map time zone cities to countries. I based my code on this approach to map time zone cities to country phone codes.
+
+## Advantages of Guessing Based on Time Zone
+
+Why choose to guess users' country calling codes based on their time zone? Here are some of the key advantages:
+
+1. **Client-Side Solution**: Unlike server-side IP address lookups, guessing based on time zone can be done entirely client-side, reducing latency and freeing up server resources.
+2. **Lightweight**: The library published on npm is small (< 15 KB), making it easy to integrate into a wide range of projects.
+3. **High-Level of Accuracy**: Most devices have accurate time zone settings, making this approach highly accurate and reliable. Additionally, it is more accurate than IP-based methods that can be thrown off by VPNs or proxies.
+
+In addition to these advantages, since `Intl` is an ECMAScript Internationalization API, you can use it in both modern browsers and node.js.
+
+## Conclusion
+
+Guessing users' country calling codes based on their time zone can be a valuable addition to any developer's toolkit. Whether you're building a messaging app, ride-sharing service, or any other application involving phone numbers, consider using [guess-calling-code](https://www.npmjs.com/package/guess-calling-code).
+
+Links related to the topics covered:
+
+- `Intl.DateTimeFormat` API: [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat)
+- `guess-calling-code` library: [npm](https://www.npmjs.com/package/guess-calling-code), [showcase](https://guess-calling-code.anarch.studio/)
+- Mapping time zone cities to countries: [Techighness post](https://www.techighness.com/post/get-user-country-and-region-on-browser-with-javascript-only/)
+- Example usage of `guess-calling-code`: [GitHub repository](https://github.com/AnarchStudio/guess-calling-code#usage)
+
+I hope this article has provided a helpful explanation on how to determine country calling codes using JavaScript and the advantages of utilizing time zones as a reference. If you found [guess-calling-code](https://www.npmjs.com/package/guess-calling-code) helpful, kindly consider giving it a star on [GitHub Repo](https://github.com/AnarchStudio/guess-calling-code)❤️. Please don't hesitate to share any feedback or questions in the comments section below. Your engagement is greatly appreciated!

@@ -1,0 +1,192 @@
+---
+title: "一个用于在 Typescript 中将 Union 转化为 Set 的工具类型"
+excerpt: "本文从业务角度出发，编写了一个类型工具，用来将 Union 转换为 Set"
+date: "2023-01-30"
+locale: "zh"
+tags: [TypeScript]
+coverImage: https://rorsch-1256426089.file.myqcloud.com/public/202301310013066.png
+---
+
+## Motivation
+
+想象一下你在做一个 Todo 应用。
+![homer 的 待办事项](https://rorsch-1256426089.file.myqcloud.com/public/202301302120989.webp)
+这个页面通过调用一个 HTTP API 来获取所有的待办事项。你和后端的同事约定好了一个待办事项数据类型：
+
+```typescript
+type Todo = {
+  id: number;
+  title: string;
+  description: string;
+  /**
+   * 0 代表待办，1 代表完成
+   */
+  status: 0 | 1;
+};
+```
+
+这个 Todo 应用有一个用来筛选出未完成/已完成的事项的筛选框，你可能会码一个如下的数据结构来代表筛选框的所有选项：
+
+```typescript
+const statusFilterOptions = [
+  {
+    value: 0,
+    label: "active",
+  },
+  {
+    value: 1,
+    label: "completed",
+  },
+];
+```
+
+为了防止同事或你自己在日后重构这段代码时手滑输出一个 bug， 你可能会给此选项定义一个类型：
+
+```typescript
+type Option = {
+  value: Todo["status"];
+  label: string;
+};
+
+const statusFilterOptions: Option[] = [
+  {
+    value: 0,
+    label: "active",
+  },
+  {
+    value: 1,
+    label: "completed",
+  },
+];
+```
+
+一般来讲，如果你的团队只是简单的使用 Typescript 的话，到这里就够了。但是如果我们想将 `statusFilterOptions`的类型定义得更精确，这里还可以走的更远。以下几种 `statusFilterOptions`的例子虽然满足了`Option`类型，放到生产环境却会让用来 **筛选出未完成/已完成的事项** 的筛选框组件产生 bug:
+
+```typescript
+// 选项的 value 相同
+const statusFilterOptions: Option[] = [
+  {
+    value: 1,
+    label: "active",
+  },
+  {
+    value: 1,
+    label: "completed",
+  },
+];
+
+// 选项少写了一个
+const statusFilterOptions: Option[] = [
+  {
+    value: 1,
+    label: "active",
+  },
+];
+
+// 选项多写了一个
+const statusFilterOptions: Option[] = [
+  {
+    value: 0,
+    label: "active",
+  },
+  {
+    value: 1,
+    label: "completed",
+  },
+  {
+    value: 2,
+    label: "completed",
+  },
+];
+```
+
+不止是为了消灭以上几种 bug case, 想象一下实际的业务场景，产品可能经常变更，todo 的 status 虽然现在只有 0 与 1 两种，可能在之后变成 0 ，1 与 2 三种，为了防止只修改 `Todo`类型而筛选器选项未同步修改的情况，我们可以做一下类型体操，编写一个在诸如此类场景下可以广泛使用的类型。
+
+## Coding
+
+首先思考一下我们类型的输入输出，我们期望输入的类型是`0 | 1` 或 `male | female`这样的集合，期望输出的类型应该是精准包含集合中所有元素的数组，一个不能多，一个不能少 🙅‍♀️，并且数组元素的顺序是可以改变的。很容易就可以得出结论，我们需要的是一个将 `union` 转换为 `set` 的类型。下列为 `UnionToSet`代码：
+
+```typescript
+type UnionToSet<
+  U extends string | number | symbol,
+  R extends (string | number | symbol)[] = []
+> = {
+  [S in U]: Exclude<U, S> extends never
+    ? [...R, S]
+    : UnionToSet<Exclude<U, S>, [...R, S]>;
+}[U];
+```
+
+上述代码通过递归遍历 U 来实现转换，需要注意 ⚠️ 以下三点：
+
+- **使用了 TypeScript 4.0 版本提供的重量级功能: [可变元组类型(Variadic Tuple Types)](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html#variadic-tuple-types)**。所以只能在 TypeScript 4.0 及以上版本使用。
+- **基于递归**。虽然 [TypeScript 4.5 对尾递归有优化](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html#tail-recursion-elimination-on-conditional-types)，但是因为没有办法转换成尾递归的模式，所以请不要在集合太大的情况下使用。
+- **Object 键类型约束**。基于 JavaScript Object 键的限制，TypeScript 限制在上文的`[S in U]`中 U 的类型必须派生自`string | numebr | symbol`，所以如`true | false`这样的 union 是没有办法使用此类型的。当然, 因为 boolean 类型的值只有 2 个，打错了 IDE 也会有提示，所以也不太需要特地去约束类型。
+
+这里我们可以做一个小优化，在上述代码中，U 派生自 `string | number`, R 派生自 `string | number`,所以我们可以抽象出此类型，并对使用者屏蔽 U 与 R：
+
+```typescript
+type UnionToSetHelper<
+  T extends keyof any,
+  U extends T = T,
+  R extends T[] = []
+> = {
+  [S in U]: Exclude<U, S> extends never
+    ? [...R, S]
+    : UnionToSetHelper<T, Exclude<U, S>, [...R, S]>;
+}[U];
+
+export type UnionToSet<T extends keyof any> = UnionToSetHelper<T>;
+```
+
+以下为测试用例:
+
+```typescript
+const a: UnionToSet<0 | 1> = [0, 1]; // ✅
+const a: UnionToSet<0 | 1> = [1, 0]; // ✅
+const b: UnionToSet<0 | 1> = [0, 1, 2]; // ❎
+const c: UnionToSet<0 | 1> = [0]; // ❎
+const d: UnionToSet<0 | 1> = [1, 1]; // ❎
+```
+
+基于我们构造的`UnionToSet`的类型，我们可以非常简单的码出一个与业务强结合的 `Options`类型：
+
+```typescript
+type Option<T extends keyof any> = {
+  value: T;
+  label: string;
+};
+
+type OptionsHelper<
+  T extends keyof any,
+  U extends T = T,
+  R extends Option<T>[] = []
+> = {
+  [S in U]: Exclude<U, S> extends never
+    ? [...R, Option<S>]
+    : OptionsHelper<T, Exclude<U, S>, [...R, Option<S>]>;
+}[U];
+
+type Options<T extends keyof any> = OptionsHelper<T>;
+```
+
+以下为 Todo demo，可以 fork 之后尝试修改 `src/App.tsx`中 `Todo`类型。
+
+<iframe
+  src="https://codesandbox.io/embed/demo-of-suikos-blog-union-to-set-d2c3xi?fontsize=14&hidenavigation=1"
+  style={{
+    width: "100%",
+    height: "500px",
+    border: 0,
+    borderRadius: 4,
+    overflow: "hidden",
+  }}
+  title="demo of suiko&#039;s blog union-to-set"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
+## Bonus
+
+本文主要介绍了`union to set`的情况，很自然的可以想到是否可以将`union`转换为`tuple`，可以跳转至 [此 issue](https://github.com/microsoft/TypeScript/issues/13298) 查看大家的讨论。
+也可以在 [type-challenges](https://github.com/type-challenges/type-challenges) 题库中查看 [此题](https://github.com/type-challenges/type-challenges/blob/main/questions/00730-hard-union-to-tuple/README.md)。
