@@ -33,10 +33,10 @@ export const FRIEND_LINKS: {
   link: string;
 }[] = [
   {
-    name: "Anarch Studio",
+    name: "Astra Surge",
     description:
-      "Anarch Studio is a tight-knit collective of developers and designers driven by a shared passion for building potent open-source software.",
-    link: "https://anarch.studio",
+      "Astra Surge is a tight-knit collective of developers and designers driven by a shared passion for building potent open-source software.",
+    link: "https://astrasurge.com",
   },
   {
     name: "Xramas",
