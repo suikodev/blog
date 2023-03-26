@@ -1,1 +1,1 @@
-## My Blog
+## Suiko's Palace
