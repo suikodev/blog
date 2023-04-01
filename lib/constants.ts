@@ -43,4 +43,9 @@ export const FRIEND_LINKS: {
     description: "``` Best regards,Programmer ```",
     link: "https://www.xramas.com/a",
   },
+  {
+    name: "MJJ建站",
+    description: "```MJJ建站```",
+    link: "https://mjjjz.com/",
+  },
 ];
