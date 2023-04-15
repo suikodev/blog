@@ -48,4 +48,14 @@ export const FRIEND_LINKS: {
     description: "```MJJ建站```",
     link: "https://mjjjz.com/",
   },
+  {
+    name: "水色",
+    description: "Stay Simple && Stay Happy",
+    link: "https://www.covermusic.cn/",
+  },
+  {
+    name: "始祖论坛",
+    description: "始祖论坛",
+    link: "https://shizu.one",
+  },
 ];
