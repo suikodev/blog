@@ -1,5 +1,7 @@
 {
-  "presets": ["next/babel"],
+  "presets": [
+    "next/babel"
+  ],
   "plugins": [
     [
       "prismjs",
@@ -14,9 +16,12 @@
           "jsx",
           "tsx",
           "typescript",
-          "markdown"
+          "markdown",
+          "gdscript"
         ],
-        "plugins": ["line-numbers"]
+        "plugins": [
+          "line-numbers"
+        ]
       }
     ]
   ]
