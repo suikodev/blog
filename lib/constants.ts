@@ -58,4 +58,9 @@ export const FRIEND_LINKS: {
     description: "始祖论坛",
     link: "https://shizu.one",
   },
+  {
+    name: "Seven的小破站",
+    description: "不过时些许风霜罢了。",
+    link: "https://qqb.icu/",
+  },
 ];
