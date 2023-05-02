@@ -60,7 +60,7 @@ export const FRIEND_LINKS: {
   },
   {
     name: "Seven的小破站",
-    description: "不过时些许风霜罢了。",
+    description: "不过是些许风霜罢了。",
     link: "https://qqb.icu/",
   },
 ];
