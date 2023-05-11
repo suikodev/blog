@@ -4,7 +4,8 @@
     "dev": "next",
     "build": "next build",
     "upload-static": "node ./scripts/update-static-to-tencent-cos.js",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "start": "next start"
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",
