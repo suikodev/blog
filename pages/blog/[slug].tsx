@@ -80,7 +80,7 @@ const Post: NextPage<{ post: PostType }> = ({ post }) => {
       <Script
         id="twikoo"
         strategy="afterInteractive"
-        src="https://rorsch-1256426089.file.myqcloud.com/public/libs/twikoo/1.6.7/twikoo.all.min.js"
+        src="https://cdn.staticfile.org/twikoo/1.6.16/twikoo.all.min.js"
         onReady={() => {
           twikoo.init({
             envId: TWIKOO_URL,

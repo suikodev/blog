@@ -6,7 +6,7 @@ export const TITLE_GRADIENT = [
   "linear-gradient(to left,rgb(204,228,255),rgb(205,199,255))",
   "linear-gradient(to left,rgb(205,199,255),rgb(204,228,255))",
 ];
-export const TWIKOO_URL = "https://twikoo.120.im/";
+export const TWIKOO_URL = "https://twikoo.suiko.dev/";
 export const SITE_URL = "https://suiko.dev";
 export const TWITTER_USERNAME = "suikodev";
 export const NAV = [
