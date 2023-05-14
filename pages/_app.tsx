@@ -8,8 +8,8 @@ import "../styles/index.css";
 import "../styles/code.css";
 import { SITE_URL } from "~/lib/constants";
 import { useEffect } from "react";
-import { Analytics } from "@vercel/analytics/react";
 import isDark from "~/utils/isDark";
+import Script from "next/script";
 
 function MyApp({
   Component,
@@ -50,7 +50,12 @@ function MyApp({
           <Component {...pageProps} key={router.route} />
         </AnimatePresence>
       </Layout>
-      <Analytics />
+      <Script
+        id="icarus"
+        data-domain="suiko.dev"
+        strategy="afterInteractive"
+        src="https://icarus.suiko.dev/js/script.js"
+      />
     </>
   );
 }

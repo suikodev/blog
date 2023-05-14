@@ -10,7 +10,6 @@
   "dependencies": {
     "@heroicons/react": "^1.0.6",
     "@types/canvas-confetti": "^1.4.3",
-    "@vercel/analytics": "^0.1.11",
     "babel-plugin-prismjs": "^2.1.0",
     "canvas-confetti": "^1.5.1",
     "classnames": "^2.3.1",
