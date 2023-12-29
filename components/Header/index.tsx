@@ -34,7 +34,7 @@ const Header = () => {
             layout
             className={`flex w-full justify-between z-10 ${
               isFixedNav
-                ? "p-4 top-0 left-0 fixed  shadow bg-primary text-primary-content"
+                ? "p-4 top-0 left-0 fixed  shadow bg-primary"
                 : "bg-transparent"
             } md:from-transparent md:to-transparent md:shadow-none md:p-0 md:static md:order-1 md:w-auto`}
           >
