@@ -170,7 +170,7 @@ const TocButton: React.FC<TocButtonProps> = ({ headings }) => {
                 initial={"initial"}
                 animate={"open"}
                 exit={"closed"}
-                className="absolute right-5 bottom-5 text-primary"
+                className="absolute right-5 bottom-5 text-secondary dark:text-primary"
                 onClick={() => setIsOpen(false)}
                 aria-label={t("closeButtonAccessibleName")}
               >

@@ -27,9 +27,7 @@ const TagRenderer = (
       <motion.a
         whileHover={{ scale: 1.1 }}
         style={{ fontSize: size, color }}
-        className={
-          "link link-hover inline-block tag-cloud-tag text-gradient-to-r from-primary to-secondary"
-        }
+        className={"link link-hover inline-block tag-cloud-tag text-primary"}
       >
         #{tag.value}
       </motion.a>
@@ -48,7 +46,7 @@ const TagIndex: NextPage<TagIndexProps> = ({ tags }) => {
         <div className="hero py-16">
           <div className="hero-content text-center">
             <div className="max-w-4xl">
-              <h1 className="py-6 text-4xl font-bold pb-12">
+              <h1 className="py-6 text-4xl font-bold pb-12 text-primary">
                 👇{t("allPostTags")}
               </h1>
               <TagCloud

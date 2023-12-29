@@ -20,13 +20,13 @@ const MdNav: React.FC = () => {
             whileHover={{
               scale: 1.05,
             }}
-            className={`font-bold relative text-primary-content`}
+            className={`font-bold relative text-secondary dark:text-primary-content`}
           >
             {t(item.label)}
             {isActiveTab(item.href) && (
               <motion.div
                 layoutId="underline"
-                className={`w-full absolute border-b-4 border-primary-content`}
+                className={`w-full absolute border-b-4 border-secondary dark:border-primary-content`}
               />
             )}
           </motion.a>

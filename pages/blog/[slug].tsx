@@ -129,8 +129,8 @@ const Post: NextPage<{ post: PostType }> = ({ post }) => {
       <AnimateContainer>
         <article>
           <header className="max-w-4xl mx-auto flex flex-col py-8 gap-6 justify-center items-center">
-            <div className="flex gap-2 py-6 flex-col items-center">
-              <h1 className="text-5xl text-center mt-6 mb-8 lg:[font-size:3rem] font-bold">
+            <div className="flex gap-2 py-16 flex-col items-center">
+              <h1 className="text-5xl text-center mt-10 mb-12 lg:[font-size:3rem] font-bold">
                 {post.frontmatter.title}
               </h1>
               <div className="space-x-3 flex items-center">
@@ -164,7 +164,7 @@ const Post: NextPage<{ post: PostType }> = ({ post }) => {
                   >
                     <motion.a
                       whileHover={{ scale: 1.1 }}
-                      className="link link-hover link-primary inline-block text-lg font-medium text-gradient-to-b from-primary to-secondary"
+                      className="link link-hover link-primary inline-block text-lg font-medium text-primary"
                     >
                       #{tag}
                     </motion.a>

@@ -19,10 +19,20 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
     <>
       {posts?.map((post, index) => (
         <NoScrollLink key={post.route} href={`/blog/${post.route}`} passHref>
-          <motion.a className="inline-block w-full bg-gradient-to-b from-primary to-secondary">
+          <motion.a className="inline-block w-full bg-secondary">
             <motion.article
               whileHover={{
                 x: 10,
+                transition: {
+                  duration: 0.2,
+                  type: "tween",
+                  ease: "linear",
+                },
+              }}
+              transition={{
+                duration: 0.2,
+                type: "tween",
+                ease: "linear",
               }}
               className={`grid md:h-56 gap-3 py-8 px-4 bg-base-100 transparent md:gap-6 md:grid-cols-4 border-t ${
                 index === posts.length - 1 ? "border-b" : ""
@@ -52,7 +62,7 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
                 } `}
               >
                 <div className="space-y-1">
-                  <h2 className="text-3xl md:line-clamp-1 leading-snug tracking-tighter font-bold col-span-2">
+                  <h2 className="text-2xl md:line-clamp-1 leading-snug tracking-tighter col-span-2">
                     {post.frontmatter.title}
                   </h2>
                   <div className="space-x-2">
@@ -67,7 +77,7 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
                           });
                         }}
                         whileHover={{ scale: 1.1 }}
-                        className="link link-hover link-primary inline-block text-lg font-medium text-gradient-to-b from-primary to-secondary"
+                        className="link link-hover link-primary inline-block text-lg font-medium text-primary"
                       >
                         #{tag}
                       </motion.button>

@@ -18,7 +18,9 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
         <div className="hero py-16">
           <div className="hero-content text-center">
             <div className="max-w-4xl">
-              <h1 className="py-6 text-4xl font-bold">🖖{t("blogIntro")}</h1>
+              <h1 className="py-6 text-4xl font-bold text-primary">
+                🖖{t("blogIntro")}
+              </h1>
             </div>
           </div>
         </div>

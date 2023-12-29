@@ -5,17 +5,17 @@ import { useTranslation } from "react-i18next";
 const Footer = () => {
   const { t } = useTranslation();
   return (
-    <footer className="from-secondary to-primary text-secondary-content bg-gradient-to-br">
+    <footer className="bg-primary text-secondary dark:text-primary-content">
       <Container>
-        <div className="py-16 flex items-center justify-center flex-col gap-3">
+        <div className="py-16 flex items-center justify-center flex-col gap-4">
           <p className="text-xl font-extrabold">
             © {new Date().getFullYear()} {AUTHOR_NAME}. All rights reserved.
           </p>
           <div className="max-w-sm text-center">
-            <p className="text-lg font-bold">
+            <p className="text-lg">
               {t("linksPageTitle", { author: AUTHOR_NAME })}:
             </p>
-            <p className="flex flex-wrap gap-2 justify-center">
+            <p className="flex flex-wrap gap-x-2 justify-center">
               {FRIEND_LINKS.map((i) => (
                 <a
                   target="_blank"

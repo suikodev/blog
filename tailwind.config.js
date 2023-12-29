@@ -1,5 +1,5 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
-const lightColor = require("daisyui/src/colors/themes")["[data-theme=winter]"];
+const lightColor = require("daisyui/src/colors/themes")["[data-theme=acid]"];
 const darkColor = require("daisyui/src/colors/themes")["[data-theme=night]"];
 
 module.exports = {
@@ -11,6 +11,9 @@ module.exports = {
         light: {
           ...lightColor,
           "--rounded-btn": "5rem",
+          primary: "#3D3B8E",
+          secondary: "#91F5AD",
+          accent: "#E072A4",
         },
       },
       {

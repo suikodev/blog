@@ -11,7 +11,6 @@ import LocaleLink from "../LocaleLink";
 import { useRouter } from "next/router";
 import rotate from "~/animates/rotate";
 import Bio from "./Bio";
-import { TITLE_GRADIENT } from "~/lib/constants";
 
 const Header = () => {
   const router = useRouter();
@@ -28,14 +27,14 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="from-primary to-secondary text-primary-content bg-gradient-to-br pt-8 pb-12 md:pb-0">
+    <header className="bg-primary text-secondary dark:text-primary-content pt-8 pb-12 md:pb-0">
       <Container>
         <div className="flex-col md:flex-row flex md:justify-between">
           <motion.div
             layout
             className={`flex w-full justify-between z-10 ${
               isFixedNav
-                ? "p-4 top-0 left-0 fixed  shadow bg-gradient-to-br from-primary to-secondary text-primary-content"
+                ? "p-4 top-0 left-0 fixed  shadow bg-primary text-primary-content"
                 : "bg-transparent"
             } md:from-transparent md:to-transparent md:shadow-none md:p-0 md:static md:order-1 md:w-auto`}
           >
@@ -84,21 +83,9 @@ const Header = () => {
             }}
             className="flex items-center mt-6 md:mt-0"
           >
-            <motion.span
-              animate={{
-                background: TITLE_GRADIENT,
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                transition: {
-                  duration: 0.5,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                },
-              }}
-              className="text-4xl text-center md:text-left md:text-6xl font-bold tracking-tighter leading-tight"
-            >
+            <span className="text-4xl text-center md:text-left md:text-6xl font-bold tracking-tighter leading-tight">
               <LocaleLink href="/">{`> ${t("title")}`}</LocaleLink>
-            </motion.span>
+            </span>
           </motion.div>
         </div>
 

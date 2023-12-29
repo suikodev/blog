@@ -99,7 +99,7 @@ const NavButtonStyle: Record<
     buttonColor: "btn-primary",
   },
   "/tag": {
-    buttonColor: "btn-secondary",
+    buttonColor: "btn-accent",
   },
   "/links": {
     buttonColor: "#fff",
@@ -118,7 +118,7 @@ const Nav: React.FC = () => {
     <>
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="text-primary-content md:hidden"
+        className=" text-secondary dark:text-primary-content md:hidden"
         aria-label={t("navButtonA11yName")}
       >
         <MenuAlt1Icon className="w-7 h-7" />

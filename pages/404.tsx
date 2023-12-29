@@ -13,22 +13,17 @@ const PageNotFound = () => {
       break;
   }
   return (
-    <div className="hero min-h-screen bg-base-100 text-base-content">
+    <div className="hero min-h-screen bg-primary text-secondary dark:bg-base-100 dark:text-base-content">
       <div className="hero-content text-center">
         <div>
-          <h1 className="text-9xl font-bold text-gradient-to-b from-secondary to-primary">
-            404
-          </h1>
-          <p className="text-3xl font-light leading-10">
-            <span className="text-gradient-to-b from-secondary to-primary">
-              {helperText}
-            </span>{" "}
-            <span className="text">😢</span>
+          <h1 className="text-[12em] font-bold">{"404"}</h1>
+          <p className="text-3xl font-light leading-10 mt-4">
+            <span>{helperText}</span> <span className="text">😢</span>
           </p>
 
           <div className="space-x-2">
             <button
-              className="btn btn-primary mt-16"
+              className="btn btn-secondary btn-outline mt-16"
               onClick={() => {
                 router.back();
               }}
@@ -38,7 +33,7 @@ const PageNotFound = () => {
               {t("goBack")}
             </button>
             <button
-              className="btn btn-primary btn-outline mt-16"
+              className="btn btn-accent mt-16"
               onClick={() => {
                 router.push("/", undefined, {
                   locale: i18n.language,

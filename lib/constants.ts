@@ -2,10 +2,6 @@ export const GITHUB_SOCIAL_URL = "https://github.com/suikodev";
 export const TWITTER_SOCIAL_URL = "https://twitter.com/suikodev";
 export const TELEGRAM_SOCIAL_URL = "https://t.me/suikodev";
 export const AUTHOR_NAME = "Suiko";
-export const TITLE_GRADIENT = [
-  "linear-gradient(to left,rgb(204,228,255),rgb(205,199,255))",
-  "linear-gradient(to left,rgb(205,199,255),rgb(204,228,255))",
-];
 export const TWIKOO_URL = "https://twikoo.suiko.dev/";
 export const SITE_URL = "https://suiko.dev";
 export const TWITTER_USERNAME = "suikodev";

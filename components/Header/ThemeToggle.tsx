@@ -32,7 +32,7 @@ const ThemeToggle: React.FC = () => {
     <AnimatePresence exitBeforeEnter initial={false}>
       <motion.button
         aria-label={t("themeToggleButtonAccessibleName")}
-        className="text-primary-content focus:outline-none"
+        className="text-secondary dark:text-primary-content focus:outline-none"
         onClick={() => toggleMode()}
         whileHover={!darkModeActive ? rotate : undefined}
         key={darkModeActive ? "dark-icon" : "light-icon"}
